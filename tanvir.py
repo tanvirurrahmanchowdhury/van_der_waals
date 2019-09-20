@@ -13,7 +13,7 @@ def beta_model(u,w_p_bar,wg,y,delta,P):
     part1=(wg ** 2-(wg ** 2 + u ** 2) * delta ** 2)/(2*u*sqrt(wg ** 2+u ** 2))
     part2=(2*w_p_bar**2*delta/u**2)*((wg/u)*(arctan(wg*P/u) - arctan(wg/u))+1/P-1)
     e1=1+(w_p_bar ** 2/u ** 2)*((1-delta ** 2)*y/P-log(Iplus/Iminus)*part1)+part2
-    return (e1-1)/(e1+1)
+    return (e1-1)/(e1+1), e1
 
 def polarize(u,w1,w2,a_0_1,a_0_2):
     a_u_1 = a_0_1 * w1 **2/(w1 ** 2 + u **2)
@@ -25,3 +25,6 @@ def diffuse(u,g0,w_sub,w1,d0_perp):
     du_perp = d0_perp*(1- lamb * arctan(1/lamb));
     fw = (u ** 2+(1+g0)* w_sub ** 2)/((u ** 2+w1 ** 2)*(u ** 2+ w_sub ** 2) ** 2)
     return lamb, du_perp, fw
+
+def damping(x,g,h):
+    return x ** 5 / sqrt(1 + g * x ** 2 + h * x ** 4 + x ** 10)
