@@ -5,7 +5,7 @@ Created on Thu Sep 19 15:22:25 2019
 
 @author: Tanvir Chowdhury
 """
-from numpy import sqrt, arctan, log
+from numpy import sqrt, arctan, log, dot, ones
 
 def beta_model(u,w_p_bar,wg,y,delta,P):
     Iplus=sqrt((1+y ** 2) * (1+u ** 2/wg ** 2)) + u*y/wg
@@ -26,5 +26,6 @@ def diffuse(u,g0,w_sub,w1,d0_perp):
     fw = (u ** 2+(1+g0)* w_sub ** 2)/((u ** 2+w1 ** 2)*(u ** 2+ w_sub ** 2) ** 2)
     return lamb, du_perp, fw
 
-def damping(x,g,h):
-    return x ** 5 / sqrt(1 + g * x ** 2 + h * x ** 4 + x ** 10)
+def damping(g_1,h_1,x_1,NN):
+    unity = ones((10,NN),dtype=float)
+    return x_1 ** 5 / sqrt(unity + dot(g_1,x_1) ** 2 + dot(h_1,x_1) ** 4 + x_1 ** 10)
