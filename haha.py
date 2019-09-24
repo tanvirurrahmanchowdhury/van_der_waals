@@ -10,12 +10,21 @@ import numpy as np
 import scipy.optimize
 import matplotlib.pyplot as plt
 from tanvir import beta_model, polarize, diffuse, damping
-scale = 1.0
+print('***** Input some parameters for the substrate *****')
+scale = float(input('Enter the scale factor: '))
 bohr = 0.529177
-eps0 = (2*6.9+3.8)/3
+eps_perp = float(input('Enter the perpendicular component of static dielectric function: '))
+eps_para = float(input('Enter the parallel component of static dielectric function: '))
+eps0 = (2*eps_perp+eps_para)/3 
+float(input('Enter substrate a value (Angstroms): '))
 a_sub = scale * (3.29/bohr)
+float(input('Enter substrate c value (Angstroms): '))
 c_sub = 3.2/bohr
-n_sub = (1 + 2*6)/(a_sub ** 2 * c_sub * np.cos(np.radians(30)))
+angle_sub = float(input('And what is the angle between a and c in degrees? '))
+valence_1 = eval(input('Enter the number of valence electron of Mo or W: '))
+valence_2 = eval(input('Enter the number of valence electron of S or Se: '))
+
+n_sub = (valence_1 + 2*valence_2)/(a_sub ** 2 * c_sub * np.cos(np.radians(angle_sub)))
 
 rs = (3/4 * np.pi * n_sub) ** (1/3)
 d0_perp = 0.02*rs**2 - 0.27*rs + 2.06
@@ -29,6 +38,7 @@ def penn_model(x):
 # inital guess was that the solution is between 0.1 to 0.9
 wg = scipy.optimize.brentq(penn_model,0.1,0.9)
 
+print('***** Thanks! I have modeled the substrate. Not input some parameters for the graphene layer *****')
 a_0_1 = 9.945
 a_0_2 = a_0_1 ** (5/3)
 a_graphene = scale * (2.46/bohr)
@@ -55,8 +65,8 @@ C5nl = np.zeros(10)
 C5q = np.zeros(10)
 
 #image loop
-N = 0.1
-u = np.arange(N,10,N)
+N = 0.001
+u = np.arange(N,1000,N)
 #for n from 1 to 10 images
 for n in range(1,11):
     for jj in range(len(u)):
@@ -96,7 +106,7 @@ print('C5 = ',C5)'''
 b_bar = 4.5
 c = c_sub * bohr
 # load distance data
-din, Edft = np.loadtxt('test_data.txt',skiprows=1,max_rows=10,unpack=True)
+din, Edft = np.loadtxt('test_data.txt',skiprows=1,max_rows=21,unpack=True)
 #compute damping factor fd begins
 g = 2 * b_bar ** 2 * (C3/C5)
 h = 10 * b_bar ** 4 * (C3/C5) ** 2
