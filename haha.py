@@ -8,6 +8,7 @@ Created on Thu Sep 19 15:22:25 2019
 
 import numpy as np
 import scipy.optimize
+import matplotlib.pyplot as plt
 from tanvir import beta_model, polarize, diffuse, damping
 scale = 1.0
 bohr = 0.529177
@@ -95,7 +96,7 @@ print('C5 = ',C5)'''
 b_bar = 4.5
 c = c_sub * bohr
 # load distance data
-din = np.loadtxt('energy_data.txt',skiprows=1,usecols=1,max_rows=9,unpack=True)
+din, Edft = np.loadtxt('test_data.txt',skiprows=1,max_rows=10,unpack=True)
 #compute damping factor fd begins
 g = 2 * b_bar ** 2 * (C3/C5)
 h = 10 * b_bar ** 4 * (C3/C5) ** 2
@@ -121,15 +122,21 @@ fd = damping(g,h,x,NN)
 Vaan = np.dot(C3,-1/term_1 ** 3) + np.dot(C4,-1/term_1 ** 4) + np.dot(C5,-1/term_1 ** 5)
 fdT = fd.transpose()
 Evdw1 = np.dot(Vaan,fdT)
-#print(np.sum(Evdw1))
-print(Evdw1.shape)
+Evdw1 = np.sum(Evdw1)
+#print(Evdw1.shape)
 # Equ. (10) for Vbbn
-#Vbbn = np.dot(C3,term_2 ** 3) + np.dot(C4,term_2 ** 4) + np.dot(C5,term_2 ** 5)
-#Evdw2 = np.dot(Vbbn, fdT)
-#print(np.sum(Evdw2))
+Vbbn = np.dot(C3,term_2 ** 3) + np.dot(C4,term_2 ** 4) + np.dot(C5,term_2 ** 5)
+Evdw2 = np.dot(Vbbn, fdT)
+Evdw2 = np.sum(Evdw2)
 
-#Evdw = 27.2113966 * (Evdw1 + Evdw2)
+Evdw = 27.2113966 * 1000 * (Evdw1 + Evdw2)
 #print(Evdw.shape)
-# E_total = Edft + Evdw
+
+E_total = Edft + Evdw
+print('Total Energy= ',E_total)
 # plot din vs E_total
+plt.plot(din,E_total)
+plt.xlabel('Distance (Angstroms)')
+plt.ylabel('Total Energy (Edft + Evdw)')
+plt.show()
 #game over
