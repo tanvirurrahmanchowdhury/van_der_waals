@@ -15,18 +15,18 @@ scale = float(input('Enter the scale factor: '))
 bohr = 0.529177
 eps_perp = float(input('Enter the perpendicular component of static dielectric function: '))
 eps_para = float(input('Enter the parallel component of static dielectric function: '))
-eps0 = (2*eps_perp+eps_para)/3 
-float(input('Enter substrate a value (Angstroms): '))
-a_sub = scale * (3.29/bohr)
-float(input('Enter substrate c value (Angstroms): '))
-c_sub = 3.2/bohr
-angle_sub = float(input('And what is the angle between a and c in degrees? '))
+#   eps0 = (eps_perp + 2*eps_para)/3       
+#  a_vector = float(input('Enter substrate unit vector a value, (vector b=a), (Angstroms): '))
+#  a_sub = scale * (a_vector/bohr)
+#  c_vector = float(input('Enter substrate unit vector c value (Angstroms): '))
+#  c_sub = c_vector/bohr
+#  angle_sub = float(input('And what is the angle between vectors a and b in degrees? '))
 valence_1 = eval(input('Enter the number of valence electron of Mo or W: '))
 valence_2 = eval(input('Enter the number of valence electron of S or Se: '))
 
 n_sub = (valence_1 + 2*valence_2)/(a_sub ** 2 * c_sub * np.cos(np.radians(angle_sub)))
 
-rs = (3/4 * np.pi * n_sub) ** (1/3)
+#  rs = (3/(4 * np.pi * n_sub)) ** (1/3)
 d0_perp = 0.02*rs**2 - 0.27*rs + 2.06
 w_p_bar = np.sqrt(4*np.pi*n_sub)
 w_sub = np.sqrt(w_p_bar/2)
