@@ -15,36 +15,39 @@ scale = float(input('Enter the scale factor: '))
 bohr = 0.529177
 eps_perp = float(input('Enter the perpendicular component of static dielectric function: '))
 eps_para = float(input('Enter the parallel component of static dielectric function: '))
-#   eps0 = (eps_perp + 2*eps_para)/3       
-#  a_vector = float(input('Enter substrate unit vector a value, (vector b=a), (Angstroms): '))
-#  a_sub = scale * (a_vector/bohr)
-#  c_vector = float(input('Enter substrate unit vector c value (Angstroms): '))
-#  c_sub = c_vector/bohr
-#  angle_sub = float(input('And what is the angle between vectors a and b in degrees? '))
+eps0 = (eps_perp + 2*eps_para)/3       
+a_vector = float(input('Enter substrate unit vector a value, (vector b=a), (Angstroms): '))
+a_sub = scale * (a_vector/bohr)
+c_vector = float(input('Enter substrate unit vector c value (Angstroms): '))
+c_sub = c_vector/bohr
+angle_sub = float(input('And what is the angle between vectors a and b in degrees? '))
 valence_1 = eval(input('Enter the number of valence electron of Mo or W: '))
 valence_2 = eval(input('Enter the number of valence electron of S or Se: '))
 
-n_sub = (valence_1 + 2*valence_2)/(a_sub ** 2 * c_sub * np.cos(np.radians(angle_sub)))
+n_sub = (valence_1 + 2*valence_2)/(a_sub ** 2 * c_sub * np.sin(np.radians(angle_sub)))
 
-#  rs = (3/(4 * np.pi * n_sub)) ** (1/3)
+rs = (3/(4 * np.pi * n_sub)) ** (1/3)
 d0_perp = 0.02*rs**2 - 0.27*rs + 2.06
 w_p_bar = np.sqrt(4*np.pi*n_sub)
 w_sub = np.sqrt(w_p_bar/2)
 Ef = 0.5 * (3 * n_sub * np.pi **2)**(2/3)
 
 def penn_model(x):
-#       return eps0-1-((2*w_p_bar **2)*((1+x**2/16*Ef**2) - (x/(4*Ef))))/(3* x**2)
+#      return eps0-1-((2*w_p_bar **2)*((1+x**2/16*Ef**2) - (x/(4*Ef))))/(3* x**2)
        return (eps0-1)**2*(9/4)*x**4/(w_p_bar**4) + (eps0-1)*(3/4)*x**3/(w_p_bar**2*Ef) - 1
 # inital guess was that the solution is between 0.1 to 0.9
 wg = scipy.optimize.brentq(penn_model,0.1,0.9)
 
 print('***** Thanks! I have modeled the substrate. Not input some parameters for the graphene layer *****')
-a_0_1 = 9.945
+a_0_1 = float(input('Enter the static dipole polarizability (in a.u.): '))
 a_0_2 = a_0_1 ** (5/3)
-a_graphene = scale * (2.46/bohr)
-c_graphene = 3.4
+a_graphene = scale * (float(input('Enter graphene unit vector a value, (vector b=a), (Angstroms): '))/bohr)
+c_graphene = float(input('Enter graphene unit vector c value (in Bohrs): '))
+angle_graphene = float(input('And what is the angle between vectors a and b in degrees? '))
+
+print('Thank you! I have got all the data I need. Now, please wait while I am computing...')
 # n_graphene is m in the paper
-n_graphene = 4*2/(a_graphene **2 * c_graphene * np.cos(np.radians(30)))
+n_graphene = 4*2/(a_graphene **2 * c_graphene * np.sin(np.radians(angle_graphene)))
 
 wp = np.sqrt(4 * np.pi * n_graphene)
 w1 = wp/np.sqrt(3)
@@ -103,7 +106,7 @@ C4 = C4d + C4nl
 print('C5 = ',C5)'''
 
 #E_vdw
-b_bar = 4.5
+b_bar = 4.5 #in Bohrs
 c = c_sub * bohr
 # load distance data
 din, Edft = np.loadtxt('test_data.txt',skiprows=1,max_rows=21,unpack=True)
@@ -118,9 +121,9 @@ fd = np.zeros((10,NN),dtype=float)
 
 #will try to avoid this loop
 for n in range(1,11):
-    term_1[n-1,:] = din + ((n-1) * c)/bohr
-    term_2[n-1,:] = 1/(bohr * (din + n * c))
-    x[n-1,:] = term_1[n-1,:]/(bohr * b_bar)
+    term_1[n-1,:] = (din + ((n-1) * c))/bohr
+    term_2[n-1,:] = bohr/((din + n * c))
+    x[n-1,:] = term_1[n-1,:]/b_bar
 
 fd = damping(g,h,x,NN)
 #fd = damping(g,h,x)
@@ -129,15 +132,10 @@ fd = damping(g,h,x,NN)
 #print('fd= ',fd.shape)
 
 # Equ. (10) for Vaan
-Vaan = np.dot(C3,-1/term_1 ** 3) + np.dot(C4,-1/term_1 ** 4) + np.dot(C5,-1/term_1 ** 5)
-fdT = fd.transpose()
-Evdw1 = np.dot(Vaan,fdT)
-Evdw1 = np.sum(Evdw1)
+Evdw1 = np.dot(C3, fd * -1/term_1 **3) + np.dot(C4, fd * -1/term_1 **4) + np.dot(C5, fd * -1/term_1 **5)
 #print(Evdw1.shape)
 # Equ. (10) for Vbbn
-Vbbn = np.dot(C3,term_2 ** 3) + np.dot(C4,term_2 ** 4) + np.dot(C5,term_2 ** 5)
-Evdw2 = np.dot(Vbbn, fdT)
-Evdw2 = np.sum(Evdw2)
+Evdw2 = np.dot(C3, fd * term_2 ** 3) + np.dot(C4,fd * term_2 ** 4) + np.dot(C5,fd * term_2 ** 5)
 
 Evdw = 27.2113966 * 1000 * (Evdw1 + Evdw2)
 #print(Evdw.shape)
