@@ -33,8 +33,8 @@ w_sub = np.sqrt(w_p_bar/2)
 Ef = 0.5 * (3 * n_sub * np.pi **2)**(2/3)
 
 def penn_model(x):
-    return eps0-1-((2*w_p_bar **2)*((1+x**2/16*Ef**2) - (x/(4*Ef))))/(3* x**2)
-
+#       return eps0-1-((2*w_p_bar **2)*((1+x**2/16*Ef**2) - (x/(4*Ef))))/(3* x**2)
+       return (eps0-1)**2*(9/4)*x**4/(w_p_bar**4) + (eps0-1)*(3/4)*x**3/(w_p_bar**2*Ef) - 1
 # inital guess was that the solution is between 0.1 to 0.9
 wg = scipy.optimize.brentq(penn_model,0.1,0.9)
 
