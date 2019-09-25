@@ -108,7 +108,7 @@ print('C5 = ',C5)'''
 #E_vdw
 b_bar = 4.5 #in Bohrs
 c = c_sub * bohr
-# load distance data
+# load data
 din, Edft = np.loadtxt('test_data.txt',skiprows=1,max_rows=21,unpack=True)
 #compute damping factor fd begins
 g = 2 * b_bar ** 2 * (C3/C5)
