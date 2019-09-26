@@ -33,8 +33,8 @@ w_sub = np.sqrt(w_p_bar/2)
 Ef = 0.5 * (3 * n_sub * np.pi **2)**(2/3)
 
 def penn_model(x):
-#      return eps0-1-((2*w_p_bar **2)*((1+x**2/16*Ef**2) - (x/(4*Ef))))/(3* x**2)
        return (eps0-1)**2*(9/4)*x**4/(w_p_bar**4) + (eps0-1)*(3/4)*x**3/(w_p_bar**2*Ef) - 1
+
 # inital guess was that the solution is between 0.1 to 0.9
 wg = scipy.optimize.brentq(penn_model,0.1,0.9)
 
@@ -133,7 +133,7 @@ fd = damping(g,h,x,NN)
 #print('fd= ',fd.shape)
 
 # Equ. (10) for Vaan
-Evdw1 = np.dot(C3, fd * -1/term_1 **3) + np.dot(C4, fd * -1/term_1 **4) + np.dot(C5, fd * -1/term_1 **5)
+Evdw1 = np.dot(C3, fd * (-1/term_1 **3)) + np.dot(C4, fd * (-1/term_1 **4)) + np.dot(C5, fd * (-1/term_1 **5))
 #print(Evdw1.shape)
 # Equ. (10) for Vbbn
 Evdw2 = np.dot(C3, fd * term_2 ** 3) + np.dot(C4,fd * term_2 ** 4) + np.dot(C5,fd * term_2 ** 5)

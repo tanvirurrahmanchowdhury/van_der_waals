@@ -7,4 +7,4 @@ Created on Tue Aug 27 14:34:40 2019
 """
 import numpy as np
 a = 2 * np.ones((5,4))
-print(5 * -1/a ** 5)
+print(-6 -1/a **2)
