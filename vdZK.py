@@ -29,12 +29,12 @@ n_sub = (valence_1 + 2*valence_2)/(a_sub ** 2 * c_sub * np.sin(np.radians(angle_
 rs = (3/(4 * np.pi * n_sub)) ** (1/3)
 d0_perp = 0.02*rs**2 - 0.27*rs + 2.06
 w_p_bar = np.sqrt(4*np.pi*n_sub)
-w_sub = w_p_bar/np.sqrt(2)        ############
+w_sub = w_p_bar/np.sqrt(2)
 Ef = 0.5 * (3 * n_sub * np.pi **2)**(2/3)
 
 def penn_model(x):
-#      return eps0-1-((2*w_p_bar **2)*((1+x**2/16*Ef**2) - (x/(4*Ef))))/(3* x**2)
        return (eps0-1)**2*(9/4)*x**4/(w_p_bar**4) + (eps0-1)*(3/4)*x**3/(w_p_bar**2*Ef) - 1
+
 # inital guess was that the solution is between 0.1 to 0.9
 wg = scipy.optimize.brentq(penn_model,0.1,0.9)
 
@@ -75,7 +75,7 @@ u = np.arange(N,1000,N)
 for n in range(1,11):
     for jj in range(len(u)):
          a_u = np.zeros(2)
-         beta, e1 = beta_model(u[jj],w_p_bar,wg,y,big_delta,P)   #######
+         beta, e1 = beta_model(u[jj],w_p_bar,wg,y,big_delta,P)
          a_u = polarize(u[jj],w1,w2,a_0_1,a_0_2)
          
          # C3 term
@@ -133,7 +133,8 @@ fd = damping(g,h,x,NN)
 #print('fd= ',fd.shape)
 
 # Equ. (10) for Vaan
-Evdw1 = np.dot(C3, fd * (-1/term_1) **3) + np.dot(C4, fd * (-1/term_1) **4) + np.dot(C5, fd * (-1/term_1) **5)   #####
+
+Evdw1 = np.dot(C3, fd * (-1/term_1 **3)) + np.dot(C4, fd * (-1/term_1 **4)) + np.dot(C5, fd * (-1/term_1 **5))
 #print(Evdw1.shape)
 # Equ. (10) for Vbbn1
 

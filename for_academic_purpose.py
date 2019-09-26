@@ -11,3 +11,4 @@ a = a[:, np.newaxis]
 #b = np.tile(a,(4,1))
 #print(b.transpose())
 print(np.tile(a,(1,4)))
+
