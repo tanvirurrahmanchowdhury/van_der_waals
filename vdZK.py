@@ -15,7 +15,7 @@ scale = float(input('Enter the scale factor: '))
 bohr = 0.529177
 eps_perp = float(input('Enter the perpendicular component of static dielectric function: '))
 eps_para = float(input('Enter the parallel component of static dielectric function: '))
-eps0 = (eps_perp + 2*eps_para)/3       
+eps0 = (2*eps_perp + eps_para)/3       
 a_vector = float(input('Enter substrate unit vector a value, (vector b=a), (Angstroms): '))
 a_sub = scale * (a_vector/bohr)
 c_vector = float(input('Enter substrate unit vector c value (Angstroms): '))
@@ -29,7 +29,7 @@ n_sub = (valence_1 + 2*valence_2)/(a_sub ** 2 * c_sub * np.sin(np.radians(angle_
 rs = (3/(4 * np.pi * n_sub)) ** (1/3)
 d0_perp = 0.02*rs**2 - 0.27*rs + 2.06
 w_p_bar = np.sqrt(4*np.pi*n_sub)
-w_sub = np.sqrt(w_p_bar/2)
+w_sub = w_p_bar/np.sqrt(2)        ############
 Ef = 0.5 * (3 * n_sub * np.pi **2)**(2/3)
 
 def penn_model(x):
@@ -41,12 +41,12 @@ wg = scipy.optimize.brentq(penn_model,0.1,0.9)
 print('***** Thanks! I have modeled the substrate. Not input some parameters for the graphene layer *****')
 a_0_1 = float(input('Enter the static dipole polarizability (in a.u.): '))
 a_0_2 = a_0_1 ** (5/3)
-temp_a = float(input('Enter graphene unit vector a value, (vector b=a), (Angstroms): '))
-a_graphene = scale * (temp_a/bohr)
+a_graphene = scale * (float(input('Enter graphene unit vector a value, (vector b=a), (Angstroms): '))/bohr)
 c_graphene = float(input('Enter graphene unit vector c value (in Bohrs): '))
 angle_graphene = float(input('And what is the angle between vectors a and b in degrees? '))
 
-print('Thank you! I have got all the data I need. Now, please wait while I am computing...')
+print('Thank you! I have got all the information I need. Now, please wait while I am computing...')
+
 # n_graphene is m in the paper
 n_graphene = 4*2/(a_graphene **2 * c_graphene * np.sin(np.radians(angle_graphene)))
 
@@ -54,7 +54,7 @@ wp = np.sqrt(4 * np.pi * n_graphene)
 w1 = wp/np.sqrt(3)
 w2 = wp * np.sqrt(2/5)
 kf = np.sqrt(2*Ef)
-delta = np.sqrt(3*kf**2/5)
+delta = np.sqrt(3*(kf**2)/5)
 big_delta = wg/(4*Ef)
 y = 1/big_delta
 P = np.sqrt(1 + y**2)
@@ -75,7 +75,7 @@ u = np.arange(N,1000,N)
 for n in range(1,11):
     for jj in range(len(u)):
          a_u = np.zeros(2)
-         beta, e1 = beta_model(u[jj],w_p_bar,wg,y,delta,P)
+         beta, e1 = beta_model(u[jj],w_p_bar,wg,y,big_delta,P)   #######
          a_u = polarize(u[jj],w1,w2,a_0_1,a_0_2)
          
          # C3 term
@@ -133,9 +133,10 @@ fd = damping(g,h,x,NN)
 #print('fd= ',fd.shape)
 
 # Equ. (10) for Vaan
-Evdw1 = np.dot(C3, fd * -1/term_1 **3) + np.dot(C4, fd * -1/term_1 **4) + np.dot(C5, fd * -1/term_1 **5)
+Evdw1 = np.dot(C3, fd * (-1/term_1) **3) + np.dot(C4, fd * (-1/term_1) **4) + np.dot(C5, fd * (-1/term_1) **5)   #####
 #print(Evdw1.shape)
-# Equ. (10) for Vbbn
+# Equ. (10) for Vbbn1
+
 Evdw2 = np.dot(C3, fd * term_2 ** 3) + np.dot(C4,fd * term_2 ** 4) + np.dot(C5,fd * term_2 ** 5)
 
 Evdw = 27.2113966 * 1000 * (Evdw1 + Evdw2)
