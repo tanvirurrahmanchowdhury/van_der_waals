@@ -92,8 +92,8 @@ for n in range(1,11):
          zz = delta ** 2 /(w_p_bar ** 2 + u[jj] ** 2)
          
          # non-local terms
-         C4nl[n-1] += N * (-3/(8*np.pi))* e1* a_u[0]*np.sqrt(zz)*beta ** (2*n)
-         C5nl[n-1] += (3*N/4*np.pi) * a_u[0]*e1*((e1-1) ** 2*zz/(e1+1) ** 3)*beta ** (2*n-2)
+         C4nl[n-1] += N * (-3/(8*np.pi))* e1* a_u[0]* (e1-1)/(e1+1)**2* np.sqrt(zz)*beta ** (2*n-2)
+         C5nl[n-1] += (3*N/(4*np.pi)) * a_u[0]*e1*((e1-1) ** 2*zz/(e1+1) ** 3)*beta ** (2*n-2)
 
 '''print('C3 = ', C3)
 print('C4d = ',C4d)
@@ -134,7 +134,7 @@ fd = damping(g,h,x,NN)
 
 # Equ. (10) for Vaan
 
-Evdw1 = np.dot(C3, fd * (-1/term_1 **3)) + np.dot(C4, fd * (-1/term_1 **4)) + np.dot(C5, fd * (-1/term_1 **5))
+Evdw1 = -np.dot(C3, fd * (1/term_1)**3 ) - np.dot(C4, fd * (1/term_1)**4) - np.dot(C5, fd * (1/term_1)**5)
 #print(Evdw1.shape)
 # Equ. (10) for Vbbn1
 
