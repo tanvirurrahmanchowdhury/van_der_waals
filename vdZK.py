@@ -45,7 +45,7 @@ a_graphene = scale * (float(input('Enter graphene unit vector a value, (vector b
 c_graphene = float(input('Enter graphene unit vector c value (in Bohrs): '))
 angle_graphene = float(input('And what is the angle between vectors a and b in degrees? '))
 
-print('Thank you! I have got all the information I need. Now, please wait while I am computing...')
+print('\n Thank you! I have got all the information I need. Now, please wait while I am computing...')
 
 # n_graphene is m in the paper
 n_graphene = 4*2/(a_graphene **2 * c_graphene * np.sin(np.radians(angle_graphene)))
@@ -70,7 +70,7 @@ C5q = np.zeros(10)
 
 #image loop
 N = 0.001
-u = np.arange(N,1000,N)
+u = np.arange(N,500,N)
 #for n from 1 to 10 images
 for n in range(1,11):
     for jj in range(len(u)):
@@ -110,7 +110,7 @@ print('C5 = ',C5)'''
 b_bar = 4.5 #in Bohrs
 c = c_sub * bohr
 # load data
-din, Edft = np.loadtxt('test_data.txt',skiprows=1,max_rows=21,unpack=True)
+din, Edft = np.loadtxt('wse2_4L.txt',skiprows=1,unpack=True)
 #compute damping factor fd begins
 g = 2 * b_bar ** 2 * (C3/C5)
 h = 10 * b_bar ** 4 * (C3/C5) ** 2
@@ -144,6 +144,7 @@ Evdw = 27.2113966 * 1000 * (Evdw1 + Evdw2)
 #print(Evdw.shape)
 
 E_total = Edft + Evdw
+print('van der Waals Energy = ',Evdw)
 print('Total Energy= ',E_total)
 # plot din vs E_total
 plt.plot(din,E_total)
