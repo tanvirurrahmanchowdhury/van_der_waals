@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu Sep 19 15:22:25 2019
-This is a collection of functions to be used in vdZK.py
+This is a collection of functions to be used with vdZK.py
 @author: Tanvir Chowdhury
 """
 import numpy as np

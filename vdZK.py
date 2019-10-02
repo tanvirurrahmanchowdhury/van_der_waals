@@ -24,8 +24,9 @@ c_sub = c_vector/bohr
 angle_sub = float(input('And what is the angle between vectors a and b in degrees? '))
 valence_1 = eval(input('Enter the number of valence electron of Mo or W: '))
 valence_2 = eval(input('Enter the number of valence electron of S or Se: '))
+no_of_layers = eval(input('Enter the number of layers: '))
 
-n_sub = (valence_1 + 2*valence_2)/(a_sub ** 2 * c_sub * np.sin(np.radians(angle_sub)))
+n_sub = no_of_layers * (valence_1 + 2*valence_2)/(a_sub ** 2 * c_sub * np.sin(np.radians(angle_sub)))
 
 rs = (3/(4 * np.pi * n_sub)) ** (1/3)
 d0_perp = 0.02*rs**2 - 0.27*rs + 2.06
@@ -38,7 +39,7 @@ def penn_model(x):
        return (eps0-1)**2*(9/4)*x**4/(w_p_bar**4) + (eps0-1)*(3/4)*x**3/(w_p_bar**2*Ef) - 1
 
 # inital guess was that the solution is between 0.1 to 0.9
-wg = scipy.optimize.brentq(penn_model,0.1,0.9)
+wg = scipy.optimize.brentq(penn_model,0.1,0.7)
 
 print('***** Thanks! I have modeled the substrate. Not input some parameters for the graphene layer *****')
 a_0_1 = float(input('Enter the static dipole polarizability (in a.u.): '))
@@ -110,7 +111,7 @@ C4 = C4d + C4nl
 b_bar = 4.5 # cutoff parameter in Bohrs
 c = c_sub * bohr
 # load data
-din, Edft = np.loadtxt('wse2_4L.txt',skiprows=1,unpack=True)
+din, Edft = np.loadtxt('ws2_2L.txt',skiprows=1,unpack=True)
 #compute damping factor fd begins
 g = 2 * b_bar ** 2 * (C3/C5)
 h = 10 * b_bar ** 4 * (C3/C5) ** 2
