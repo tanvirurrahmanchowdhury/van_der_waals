@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Thu Sep 19 15:22:25 2019
-
+This is a collection of functions to be used in vdZK.py
 @author: Tanvir Chowdhury
 """
 import numpy as np
@@ -28,9 +28,13 @@ def diffuse(u,g0,w_sub,w1,d0_perp):
     return lamb, du_perp, fw
 
 def damping(g,h,x,NN):
+    # creating an unity matrix
     unity = np.ones((10,NN),dtype=float)
+    # converting g and h from row to column vectors
     g = g[:, np.newaxis]
     h = h[:, np.newaxis]
+    # copying the same column NN times, so gg and hh are now 10 by NN matrices
     gg = np.tile(g,(1,NN))
     hh = np.tile(h,(1,NN))
+    # return a 10 by NN matrix (fd)
     return x ** 5 / np.sqrt(unity + gg*x ** 2 + hh*x ** 4 + x ** 10)
